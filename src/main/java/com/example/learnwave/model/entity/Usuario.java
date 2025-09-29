@@ -1,37 +1,58 @@
 package com.example.learnwave.model.entity;
 
-
 import com.example.learnwave.enums.StatusVerificacao;
 import com.example.learnwave.enums.TipoUsuario;
 
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Entity
+@Table(name = "usuarios")
 public class Usuario {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @Column(nullable = false)
     private String nome;
+    @Column(unique = true, nullable = false)
     private String email;
+    @Column(nullable = false)
     private String senha;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tipo_usuario", nullable = false)
     private TipoUsuario tipo;
     private String cpf;
     private String telefone;
     private String disciplina;
     private String escola;
+    @Column(name = "documento_url")
     private String documentoUrl;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status_verificacao")
     private StatusVerificacao statusVerificacao;
+    @Column(name = "area_ensino")
     private String areaEnsino;
     private String formacao;
     private String experiencia;
     private String status;
+    @Column(name = "data_criacao")
     private LocalDateTime dataCriacao;
+    @Column(name = "data_atualizacao")
     private LocalDateTime dataAtualizacao;
 
     // Relacionamentos
+    @Transient
     private List<Atividade> atividades;
+    @Transient
     private List<Videoaula> videoaulas;
+    @Transient
     private List<Material> materiais;
+    @Transient
     private List<ProgressoAtividade> progressoAtividades;
+    @Transient
     private List<ProgressoVideoaula> progressoVideoaulas;
+    @Transient
     private List<DownloadMaterial> downloads;
 
     public Usuario() {}

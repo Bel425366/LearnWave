@@ -4,57 +4,65 @@ import com.example.learnwave.dao.UsuarioDAO;
 import com.example.learnwave.enums.StatusVerificacao;
 import com.example.learnwave.enums.TipoUsuario;
 import com.example.learnwave.model.entity.Usuario;
+import com.example.learnwave.repository.UsuarioRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Repository
 public class UsuarioDAOImpl implements UsuarioDAO {
 
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
     @Override
     public Usuario salvar(Usuario usuario) {
-        return usuario;
+        return usuarioRepository.save(usuario);
     }
 
     @Override
     public Usuario buscarPorId(Integer id) {
-        return null;
+        return usuarioRepository.findById(id).orElse(null);
     }
 
     @Override
     public Usuario buscarPorEmail(String email) {
-        return null;
+        return usuarioRepository.findByEmail(email);
     }
 
     @Override
     public List<Usuario> listarTodos() {
-        return new ArrayList<>();
+        return usuarioRepository.findAll();
     }
 
     @Override
     public Usuario atualizar(Usuario usuario) {
-        return usuario;
+        return usuarioRepository.save(usuario);
     }
 
     @Override
     public boolean deletar(Integer id) {
-        return true;
+        if (usuarioRepository.existsById(id)) {
+            usuarioRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 
     @Override
     public List<Usuario> buscarPorTipo(TipoUsuario tipo) {
-        return new ArrayList<>();
+        return usuarioRepository.findByTipo(tipo);
     }
 
     @Override
     public List<Usuario> buscarPorStatus(String status) {
-        return new ArrayList<>();
+        return usuarioRepository.findByStatus(status);
     }
 
     @Override
     public List<Usuario> buscarPorStatusVerificacao(StatusVerificacao status) {
-        return new ArrayList<>();
+        return usuarioRepository.findByStatusVerificacao(status);
     }
 
     @Override
@@ -64,12 +72,12 @@ public class UsuarioDAOImpl implements UsuarioDAO {
 
     @Override
     public boolean existeEmail(String email) {
-        return false;
+        return usuarioRepository.existsByEmail(email);
     }
 
     @Override
     public boolean existeCpf(String cpf) {
-        return false;
+        return usuarioRepository.existsByCpf(cpf);
     }
 
     @Override
@@ -104,21 +112,26 @@ public class UsuarioDAOImpl implements UsuarioDAO {
 
     @Override
     public List<Usuario> buscarPorAreaEnsino(String area) {
-        return new ArrayList<>();
+        return usuarioRepository.findByAreaEnsino(area);
     }
 
     @Override
     public List<Usuario> buscarPorDisciplina(String disciplina) {
-        return new ArrayList<>();
+        return usuarioRepository.findByDisciplina(disciplina);
     }
 
     @Override
     public List<Usuario> buscarPorEscola(String escola) {
-        return new ArrayList<>();
+        return usuarioRepository.findByEscola(escola);
     }
 
     @Override
     public List<Usuario> buscarPorStatusVerificacao(String status) {
-        return new ArrayList<>();
+        try {
+            StatusVerificacao statusEnum = StatusVerificacao.valueOf(status.toUpperCase());
+            return usuarioRepository.findByStatusVerificacao(statusEnum);
+        } catch (IllegalArgumentException e) {
+            return List.of();
+        }
     }
 }
